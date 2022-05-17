@@ -1,12 +1,15 @@
-import os, sys, random, re, time
-import random
 import logging
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.ticker import MaxNLocator
-import numpy as np
+import os
+import random
+import re
+import sys
+import time
 
-import src.models as Model
+import matplotlib.pyplot as plt
+import modules.models as Model
+import numpy as np
+import pandas as pd
+from matplotlib.ticker import MaxNLocator
 
 
 class Parms:

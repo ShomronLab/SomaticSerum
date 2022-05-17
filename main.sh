@@ -15,7 +15,7 @@ out=MassiveLoop3
 
 for i in {1..10};do
     echo "Training model $model with lr=$lr, hid=$hid, bs=$bs, ep=$ep"
-    python /data/hadasvol/projects/cancer_plasma/somaticserum/main.py \
+    python ./src/main.py \
         $training_bam_dir \
         --sample_split $sample_split \
         --model $model \
