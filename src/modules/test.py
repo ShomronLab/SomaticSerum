@@ -1,13 +1,14 @@
-import sys, logging
+import logging
+import sys
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import torch
+import utils.utils as util
 from sklearn.metrics import confusion_matrix
 from torch._C import device
-import torch
 
-import src.util as util
 
 # Function to test the model 
 def test(parms, model_path, test_dl, device, loss_fn):
