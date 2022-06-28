@@ -12,11 +12,14 @@ from torch import nn
 class PandasDataset(torch.utils.data.Dataset):
 
     def __init__(self, X, y):
-
+        if type(X) == pd.DataFrame:
+            X = X.values
+        if type(y) == pd.Series:
+            y = y.values
         self.X = torch.tensor(
-            X.values, dtype=torch.float32)
+            X, dtype=torch.float32)
         self.y = torch.tensor(
-            y.values, dtype=torch.float32).type(torch.LongTensor)
+            y, dtype=torch.float32).type(torch.LongTensor)
 
     def __len__(self):
         return len(self.y)
@@ -78,7 +81,11 @@ class TorchModel(BaseModel):
                          (epoch, epochs, train_loss, train_acc))
 
     def predict_proba(self, X, *args, **kwargs):
-        return super().predict_proba(X.values, *args, **kwargs)
+        if type(X) == pd.DataFrame:
+            X = X.values
+        X = torch.tensor(X, dtype=torch.float32)
+        return self._base_clf(X)
+        # return super().predict_proba(X, *args, **kwargs)
 
     @classmethod
     def optuna_params(cls, trial):

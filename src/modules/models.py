@@ -269,6 +269,62 @@ class CnnLinear(nn.Module):
         return functional.softmax(self.fc_combine2(combine), dim=-1)
 
 
+class nucCnnLinear(nn.Module):
+    def __init__(self, input_size, hidden_size, linear_size, dropout=0.5, num_classes=2, **kwargs):
+        super(nucCnnLinear, self).__init__()
+
+        self.input_size = input_size
+        self.hidden_size = hidden_size
+        self.dropout = dropout
+        self.num_classes = num_classes
+
+        self.conv1d1 = nn.Conv1d(
+            in_channels=3, out_channels=hidden_size, kernel_size=1, padding=0)
+
+        self.conv1d2 = nn.Conv1d(
+            hidden_size, hidden_size, kernel_size=3, padding=1)
+
+        self.pool2 = nn.MaxPool1d(kernel_size=2)
+
+        self.conv1d3 = nn.Conv1d(hidden_size, int(
+            hidden_size * 2), kernel_size=3, padding=1)
+
+        self.drop = nn.Dropout(p=self.dropout, inplace=False)
+
+        self.layerNorm = nn.BatchNorm1d(int(hidden_size * 2))
+
+        self.fc_cnn1 = nn.Linear(in_features=int(hidden_size * input_size),
+                                 out_features=int((hidden_size)))
+
+        self.metaNorm = nn.BatchNorm1d(linear_size)
+
+    def forward_cnn(self, x):
+        output = functional.relu(self.conv1d1(x))
+        output = functional.relu(self.conv1d2(output))
+        # output = functional.relu(self.conv1d2(output))
+        output = self.pool2(functional.relu(self.conv1d2(output)))
+        # output = self.layerNorm(self.drop(functional.relu(self.conv1d3(output))))
+        output = functional.relu(self.conv1d3(output))
+
+        output = torch.flatten(output, 1)
+
+        return functional.relu(self.fc_cnn1(output))
+
+    def forward_meta(self, x):
+        output = functional.relu(self.fc_meta1(x))
+        output = functional.relu(self.fc_meta2(output))
+        output = functional.relu(self.fc_meta3(output))
+        output = functional.relu(self.fc_meta4(output))
+        return functional.relu(self.fc_meta5(output))
+
+    def forward(self, x1, x2):
+        input_seq = x1
+
+        cnn_branch = self.forward_cnn(input_seq)
+
+        return functional.softmax(cnn_branch, dim=-1)
+
+
 class LSTM_Classifier(nn.Module):
     def __init__(self, num_classes=2, input_size=200, hidden_size=64, num_layers=10, seq_length=200, dropout=0.5, batch_size=512):
         super(LSTM_Classifier, self).__init__()
