@@ -11,6 +11,8 @@ import numpy as np
 import pandas as pd
 from matplotlib.ticker import MaxNLocator
 
+debug = logging.info
+
 
 class Parms:
     def __init__(self, args):
@@ -192,6 +194,15 @@ def plot(input_file, metric, metric_test, out):
         ax1.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax2.xaxis.set_major_locator(MaxNLocator(integer=True))
         plt.savefig("{}/plot.png".format(out))  # shows the plot.
+
+
+def torch_ds_to_numpy(ds):
+    from torch.utils.data import DataLoader
+    sample_dataloader = DataLoader(
+        ds, batch_size=len(ds), shuffle=True, num_workers=1)
+    for batch in sample_dataloader:
+        break
+    return [df.numpy() for df in batch]
 
 
 if __name__ == "__main__":

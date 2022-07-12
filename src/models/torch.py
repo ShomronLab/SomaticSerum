@@ -1,8 +1,8 @@
 
 import logging
 
+import numpy as np
 import pandas as pd
-from lightgbm import DaskLGBMClassifier
 
 import torch
 from models.base_model import BaseModel
@@ -84,7 +84,7 @@ class TorchModel(BaseModel):
         if type(X) == pd.DataFrame:
             X = X.values
         X = torch.tensor(X, dtype=torch.float32)
-        return self._base_clf(X)
+        return self._base_clf(X).detach().numpy()
         # return super().predict_proba(X, *args, **kwargs)
 
     @classmethod
