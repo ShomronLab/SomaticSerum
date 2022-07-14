@@ -1,24 +1,25 @@
-import os, sys, re
 import argparse
-import time
-import random
 import logging
-
+import os
+import random
+import re
+import sys
+import time
 from dataclasses import dataclass
+from test import test
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import torch
 from sklearn.metrics import confusion_matrix
 from torch._C import device
 from torch.utils.data import DataLoader
-import torch
 
-from train import train
-from test import test
-from src.loader import CustomBamDataset2
-import src.util as util
-from src.util import Parms
+import utils.utils as util
+from modules.loader import CustomBamDataset2
+from modules.train import train
+from utils.utils import Parms
 
 
 def main(args):
